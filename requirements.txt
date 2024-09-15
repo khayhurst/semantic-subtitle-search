@@ -1,0 +1,6 @@
+streamlit
+pysrt
+chardet
+pandas
+sentence-transformers
+psycopg2
