@@ -1,5 +1,5 @@
 -- Table to store information about individual episodes for TV shows
-CREATE TABLE episodes (
+CREATE TABLE IF NOT EXISTS episodes (
     id SERIAL PRIMARY KEY,
     media_id INT NOT NULL,
     season INT NOT NULL,

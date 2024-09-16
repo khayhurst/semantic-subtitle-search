@@ -1,5 +1,5 @@
 -- Table to store subtitle data with vectorization
-CREATE TABLE subtitles (
+CREATE TABLE IF NOT EXISTS subtitles (
     id SERIAL PRIMARY KEY,
     episode_id INT,  -- Nullable because movies won't have episodes
     media_id INT,  -- Nullable because TV shows have episodes
