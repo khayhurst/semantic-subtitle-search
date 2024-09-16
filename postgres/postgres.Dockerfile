@@ -1,7 +1,7 @@
+
 # This is installing the pgvector extension for postgres
 # Source: https://www.thestupidprogrammer.com/blog/docker-with-postgres-and-pgvector-extension/
-
-FROM postgres:latest
+FROM postgres:15-bullseye
 
 RUN apt-get update && apt-get install -y \
     build-essential \
