@@ -30,33 +30,41 @@ if page == "SRT Parsing":
     if media_type == "movie":
         video_files = get_video_files('movie')
         selected_file = st.selectbox("Select the movie file", video_files)
+        # Assign the season and episode to None for movies (if needed)
+        season = None
+        episode = None
+
     elif media_type == "tv_show":
         video_files = get_video_files('tv_show')
         selected_file = st.selectbox("Select the episode file", video_files)
+        
+        # Input fields for TV shows: Season and Episode
+        season = st.number_input("Enter the season number", min_value=1, step=1)
+        episode = st.number_input("Enter the episode number", min_value=1, step=1)
+        episode_title = st.text_input("Enter the episode title", value="")
 
     uploaded_file = st.file_uploader("Choose an SRT file", type="srt")
 
     # Process uploaded file
     if st.button("Upload and Parse Subtitles") and uploaded_file is not None:
-                # Insert media (movie or TV show) into the media table with file path
-        if media_type == "movie":
-            media_id = db_manager.insert_media(title, selected_file, media_type, release_year)
-            episode_id = None
-
-        elif media_type == "tv_show":
-            media_id = db_manager.insert_media(title, selected_file, media_type, release_year)
-            episode_id = db_manager.insert_episode(media_id, season, episode, episode_title)
-
-
         # SubtitleParser logic
         parser = SubtitleParser(
             uploaded_file=uploaded_file,
             media_type=media_type,
             db_manager=db_manager,
-            media_id=media_id if media_type == "movie" else None,
-            episode_id=episode_id if media_type == "tv_show" else None
+            media_id=None,  # This will be dynamically fetched
+            episode_id=None
         )
 
+        # Insert media into the database
+        media_id = db_manager.insert_media(title, selected_file, media_type, release_year)
+
+        # Insert episode if it's a TV show
+        if media_type == "tv_show":
+            episode_id = db_manager.insert_episode(media_id, season, episode, episode_title)
+            parser.episode_id = episode_id  # Pass the episode_id to the parser
+
+        # Decode and store subtitles
         decoded_data = parser.detect_encoding()
         parser.parse_subtitles(decoded_data)
         parser.vectorize_and_store()
